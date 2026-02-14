@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#f2f2f2;margin:0;padding:24px}
+    .box{max-width:720px;margin:auto;background:#fff;border:1px solid #ddd}
+    .head{background:#0d6efd;color:#fff;text-align:center;padding:14px;font-size:22px}
+    form{padding:16px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}}
+    input,select,textarea,button{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px}
+    textarea{min-height:80px;resize:vertical}
+    .err{color:#d10000;font-size:12px;min-height:16px;margin-top:4px}
+    .row{margin-bottom:10px}
+    .checks{margin:10px 0}
+    .checks label{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:#444}
+    button{background:#0d6efd;color:#fff;border:none;cursor:pointer}
+    button:hover{opacity:.95}
+    .foot{text-align:center;padding:12px;color:#666}
+    .foot a{color:#0d6efd;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="head">Register</div>
+
+    <form id="regForm" novalidate>
+      <div class="grid">
+        <div class="row">
+          <input id="fname" placeholder="First Name">
+          <div class="err" id="e_fname"></div>
+        </div>
+        <div class="row">
+          <input id="lname" placeholder="Last Name">
+          <div class="err" id="e_lname"></div>
+        </div>
+
+        <div class="row">
+          <input id="uname" placeholder="Username">
+          <div class="err" id="e_uname"></div>
+        </div>
+        <div class="row">
+          <input id="phone" placeholder="Phone Number">
+          <div class="err" id="e_phone"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <input id="email" placeholder="Your E-mail Address">
+        <div class="err" id="e_email"></div>
+      </div>
+
+      <div class="grid">
+        <div class="row">
+          <select id="gender">
+            <option value="">Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+          <div class="err" id="e_gender"></div>
+        </div>
+        <div class="row">
+          <input id="dob" type="date">
+          <div class="err" id="e_dob"></div>
+        </div>
+
+        <div class="row">
+          <select id="country">
+            <option value="">Country</option>
+            <option>Philippines</option>
+            <option>United States</option>
+            <option>Japan</option>
+            <option>Other</option>
+          </select>
+          <div class="err" id="e_country"></div>
+        </div>
+        <div class="row">
+          <input id="company" placeholder="Your Company's Name (optional)">
+          <div class="err"></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="row">
+          <textarea id="home" placeholder="Home Address"></textarea>
+          <div class="err" id="e_home"></div>
+        </div>
+        <div class="row">
+          <textarea id="office" placeholder="Office Address (optional)"></textarea>
+          <div class="err"></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="row">
+          <input id="pass" type="password" placeholder="Password">
+          <div class="err" id="e_pass"></div>
+        </div>
+        <div class="row">
+          <input id="pass2" type="password" placeholder="Confirm Password">
+          <div class="err" id="e_pass2"></div>
+        </div>
+      </div>
+
+      <div class="checks">
+        <label><input type="checkbox" id="terms"> I agree with the terms & conditions.</label>
+        <div class="err" id="e_terms"></div>
+      </div>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <div class="foot">Already have an account? <a href="#" onclick="return false;">Login</a></div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const setErr = (id, msg) => $(id).textContent = msg;
+
+    function validName(v){ return /^[A-Za-z ]+$/.test(v); }
+    function validPhone(v){ return /^[0-9]+$/.test(v) && v.length>=7 && v.length<=15; }
+    function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+
+    $("regForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const fname = $("fname").value.trim();
+      const lname = $("lname").value.trim();
+      const uname = $("uname").value.trim();
+      const phone = $("phone").value.trim();
+      const email = $("email").value.trim();
+      const gender = $("gender").value;
+      const dob = $("dob").value;
+      const country = $("country").value;
+      const home = $("home").value.trim();
+      const pass = $("pass").value;
+      const pass2 = $("pass2").value;
+      const terms = $("terms").checked;
+
+      ["e_fname","e_lname","e_uname","e_phone","e_email","e_gender","e_dob","e_country","e_home","e_pass","e_pass2","e_terms"]
+        .forEach(id => setErr(id, ""));
+
+      let ok = true;
+
+      if(fname.length < 2 || !validName(fname)){ setErr("e_fname","First name: letters only."); ok=false; }
+      if(lname.length < 2 || !validName(lname)){ setErr("e_lname","Last name: letters only."); ok=false; }
+      if(uname.length < 4){ setErr("e_uname","Username must be at least 4 characters."); ok=false; }
+      if(!validPhone(phone)){ setErr("e_phone","Phone: numbers only (7-15 digits)."); ok=false; }
+      if(!validEmail(email)){ setErr("e_email","Invalid email."); ok=false; }
+      if(!gender){ setErr("e_gender","Select gender."); ok=false; }
+      if(!dob){ setErr("e_dob","Select date of birth."); ok=false; }
+      if(!country){ setErr("e_country","Select country."); ok=false; }
+      if(home.length < 5){ setErr("e_home","Home address required."); ok=false; }
+      if(pass.length < 6){ setErr("e_pass","Password must be at least 6 characters."); ok=false; }
+      if(pass2 !== pass){ setErr("e_pass2","Passwords do not match."); ok=false; }
+      if(!terms){ setErr("e_terms","You must agree first."); ok=false; }
+
+      if(ok){
+        alert("Registration Successful!");
+        $("regForm").reset();
+      }
+    });
+  </script>
+</body>
+</html>
